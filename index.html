@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Is More Than ChatGPT — GJU Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b18;--bg2:#0f1730;--line:#27345f;--ink:#eef2ff;--muted:#9fb0d6;
+--a:#5eead4;--b:#fbbf24;--c:#f472b6;--d:#818cf8;--good:#34d399;--warn:#fbbf24;--bad:#fb7185}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:calc(min(100vw,177.78vh)/80);background:var(--bg)}
+body{height:100vh;overflow:hidden;color:var(--ink);font-family:'Space Grotesk','Cairo',system-ui,sans-serif;
+background:radial-gradient(60rem 40rem at 85% -10%,#1b2a66 0%,transparent 60%),radial-gradient(50rem 35rem at -10% 110%,#0e4a5a 0%,transparent 60%),var(--bg)}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:3rem 3rem;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);pointer-events:none}
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;padding:3.6rem 5rem 4.6rem;display:flex;flex-direction:column;justify-content:center;
+opacity:0;visibility:hidden;transform:translateX(3rem) scale(.99);transition:opacity .45s,transform .45s,visibility .45s}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide .notes{display:none}
+.kicker{font-size:.95rem;letter-spacing:.28em;text-transform:uppercase;color:var(--a);font-weight:700;margin-bottom:1rem}
+h1{font-size:4.6rem;line-height:1.04;letter-spacing:-.025em;font-weight:700}
+h2{font-size:3.1rem;line-height:1.1;letter-spacing:-.02em;font-weight:700;margin-bottom:1.6rem}
+.lead{font-size:1.5rem;color:var(--muted);line-height:1.5;max-width:56rem}
+.grad{background:linear-gradient(90deg,var(--a),var(--d) 55%,var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:1.2rem;padding:1.5rem 1.7rem;backdrop-filter:blur(6px)}
+.card h3{font-size:1.5rem;margin-bottom:.5rem}
+.card p,.card li{font-size:1.15rem;color:var(--muted);line-height:1.5}
+.card ul{list-style:none}.card li{padding:.2rem 0}
+.grid{display:grid;gap:1.3rem}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.ico{font-size:2.4rem;margin-bottom:.6rem;display:block}
+.chip{display:inline-block;padding:.55rem 1.3rem;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:1.4rem;font-weight:600}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;letter-spacing:.12em;padding:.3rem .8rem;border-radius:99px;text-transform:uppercase}
+.t-good{background:rgba(52,211,153,.15);color:var(--good)}.t-bad{background:rgba(251,113,133,.15);color:var(--bad)}.t-warn{background:rgba(251,191,36,.15);color:var(--warn)}.t-info{background:rgba(94,234,212,.14);color:var(--a)}
+.quote{font-size:2.2rem;font-weight:600;line-height:1.3;border-inline-start:.35rem solid var(--a);padding-inline-start:1.5rem;margin-top:1.6rem}
+.code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:1.12rem;line-height:1.6;background:#050814;border:1px solid var(--line);border-radius:1rem;padding:1.4rem 1.7rem;color:#c7d2fe;white-space:pre-wrap}
+.code b{color:var(--a);font-weight:600}
+.center{text-align:center;align-items:center}
+.col{display:flex;flex-direction:column}
+/* step reveal */
+[data-s]{opacity:0;transform:translateY(1.2rem);transition:opacity .5s,transform .5s}
+[data-s].on{opacity:1;transform:none}
+.hl{color:var(--b);text-shadow:0 0 2rem rgba(251,191,36,.6)}
+[data-h]{transition:.5s}
+[data-h].hl{background:rgba(251,191,36,.14);border-radius:.6rem;padding:0 .5rem}
+/* title */
+.title h1{font-size:7.4rem}
+.title .lead{font-size:2rem;margin-top:1.6rem}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(94,234,212,.18);left:50%;top:50%;transform:translate(-50%,-50%);animation:pulse 6s ease-in-out infinite}
+.ring:nth-of-type(1){width:46rem;height:46rem}.ring:nth-of-type(2){width:62rem;height:62rem;animation-delay:-2s;border-color:rgba(129,140,248,.16)}.ring:nth-of-type(3){width:80rem;height:80rem;animation-delay:-4s;border-color:rgba(244,114,182,.12)}
+@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.04);opacity:.5}}
+.title>.center{position:relative;z-index:2}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:1rem}
+.flow .card{flex:1;text-align:center}.flow .arrow{align-self:center;font-size:2.4rem;color:var(--a)}
+.big{font-size:2.2rem;font-weight:700}
+/* video */
+.video{aspect-ratio:16/9;border-radius:1.2rem;overflow:hidden;border:1px solid var(--line);background:#000;position:relative;box-shadow:0 2rem 5rem rgba(0,0,0,.5)}
+.video iframe,.video video{width:100%;height:100%;border:0;display:block}
+.vph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;text-align:center;padding:2rem;
+background:repeating-linear-gradient(45deg,#0a1126,#0a1126 1rem,#0d1630 1rem,#0d1630 2rem);color:var(--muted)}
+.vph .play{width:5rem;height:5rem;border-radius:50%;background:var(--a);color:#042f2e;display:grid;place-items:center;font-size:2rem}
+.vph code{font-family:'JetBrains Mono',monospace;color:var(--b);background:rgba(0,0,0,.4);padding:.2rem .6rem;border-radius:.4rem;font-size:1rem}
+/* CV zoom */
+.slide.cv{padding:0}
+.cv-stage{position:absolute;inset:0;overflow:hidden}
+.paper{position:absolute;left:0;top:0;width:680px;background:#fff;color:#1a2238;border-radius:6px;box-shadow:0 30px 90px rgba(0,0,0,.6);padding:48px 52px;transform-origin:0 0;transition:transform 1s cubic-bezier(.65,0,.25,1);font-family:'Space Grotesk',sans-serif}
+.paper [data-f]{position:relative;padding:14px 16px;margin:0 -16px 12px;border-radius:8px;transition:opacity .6s,background .6s,box-shadow .6s}
+.paper.focusing [data-f]{opacity:.2}
+.paper.focusing [data-f].hot{opacity:1;background:#ecfeff;box-shadow:0 0 0 3px #14b8a6}
+.paper h4{font-size:34px;letter-spacing:-.02em}.paper .sub{color:#475569;font-size:17px;margin-top:4px}
+.paper h5{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#0f766e;margin-bottom:8px;border-bottom:2px solid #e2e8f0;padding-bottom:4px}
+.paper p,.paper li{font-size:16px;line-height:1.55;color:#1e293b}.paper ul{padding-left:20px}
+.paper .small{font-size:13px;color:#64748b}
+.flag{position:absolute;right:12px;top:-13px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:99px;opacity:0;transition:.4s;color:#fff;white-space:nowrap}
+.hot .flag{opacity:1}.flag.bad{background:#e11d48}.flag.good{background:#059669}
+.cv-tag{position:absolute;left:3rem;top:2.4rem;z-index:6}
+.cv-tag .kicker{margin-bottom:.4rem}.cv-tag .tag{font-size:1.1rem;padding:.45rem 1.1rem}
+.caption{position:absolute;bottom:4.4rem;left:50%;transform:translateX(-50%);z-index:6;background:rgba(10,16,38,.94);border:1px solid var(--line);padding:.8rem 1.8rem;border-radius:99px;font-size:1.3rem;white-space:nowrap}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:1rem;max-width:56rem}
+.bub{padding:1rem 1.4rem;border-radius:1.2rem;font-size:1.3rem;line-height:1.5;max-width:44rem}
+.bub.me{align-self:flex-end;background:#134e4a;border-bottom-right-radius:.3rem}
+.bub.ai{align-self:flex-start;background:#1e2a55;border-bottom-left-radius:.3rem}
+.bub small{display:block;font-size:.8rem;letter-spacing:.15em;color:var(--a);margin-bottom:.3rem;font-weight:700}
+/* table */
+table{width:100%;border-collapse:separate;border-spacing:0 .6rem;font-size:1.3rem}
+th{text-align:left;font-size:.9rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;padding:0 1.2rem}
+td{padding:1rem 1.2rem;background:rgba(255,255,255,.05)}td:first-child{border-radius:.8rem 0 0 .8rem;font-weight:700}td:last-child{border-radius:0 .8rem .8rem 0}
+tr[data-s]{transition:opacity .5s,transform .5s}
+/* timeline */
+.steps7{display:grid;grid-template-columns:repeat(7,1fr);gap:.8rem}
+.steps7 .card{padding:1.1rem .9rem;text-align:center}.steps7 .n{font-size:2.2rem;font-weight:700;color:var(--a)}.steps7 p{font-size:1rem;color:var(--ink)}
+/* timer */
+.timer{font-family:'JetBrains Mono',monospace;font-size:3.4rem;font-weight:600;color:var(--b)}
+button.btn{font:inherit;cursor:pointer;color:var(--ink);background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:99px;padding:.5rem 1.2rem;font-size:1rem;transition:.2s}
+button.btn:hover{background:rgba(94,234,212,.18);border-color:var(--a)}
+/* reveal */
+.reveal h1{font-size:8rem}
+.dash{display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:44rem}
+.dash .card{padding:1.2rem 1.4rem;font-size:1.25rem;font-weight:600;display:flex;align-items:center;gap:.9rem}
+.dash .card span{font-size:2rem}
+.colnum{font-size:.95rem;letter-spacing:.18em;color:var(--b);font-weight:700;margin-bottom:.4rem}
+.qr{width:19rem;height:19rem;background:#fff;border-radius:1.4rem;display:grid;place-items:center;padding:1rem;color:#334155;text-align:center;font-size:1rem}
+.qr img,.qr canvas{width:100%!important;height:100%!important}
+/* HUD */
+.hud{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.4rem;opacity:.35;transition:opacity .3s}
+.hud:hover{opacity:1}.hud.hide{display:none}
+.hud .grp{display:flex;gap:.5rem;align-items:center}
+#counter{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--muted)}
+.bar{position:fixed;left:0;bottom:0;height:.25rem;background:linear-gradient(90deg,var(--a),var(--d),var(--c));z-index:51;transition:width .4s}
+/* notes */
+#notesPanel{position:fixed;top:0;bottom:0;right:0;width:36rem;max-width:90vw;z-index:60;background:rgba(6,10,24,.97);border-left:1px solid var(--line);transform:translateX(105%);transition:transform .4s;display:flex;flex-direction:column;direction:rtl;font-family:'Cairo','Space Grotesk',sans-serif}
+#notesPanel.open{transform:none}
+#notesPanel header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem}
+#notesPanel header b{font-size:1.2rem}#notesPanel header span{font-size:.95rem;color:var(--a);direction:ltr;font-family:'JetBrains Mono',monospace}
+#notesBody{padding:1.2rem 1.5rem 3rem;overflow:auto;font-size:1.3rem;line-height:1.85;flex:1}
+#notesBody p{margin-bottom:1rem}#notesBody p.dir{color:var(--b);font-size:1.1rem}#notesBody p.key{background:rgba(94,234,212,.12);border-right:.25rem solid var(--a);padding:.6rem 1rem;border-radius:.5rem;font-weight:700}
+#notesBody .en{direction:ltr;font-family:'Space Grotesk',sans-serif}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- 1 ─ TITLE -->
+<section class="slide title" data-title="Title" data-time="قبل البداية · 00:00">
+<div class="notes">
+<p class="dir">[تجهيز القاعة] على الشاشة هذا العنوان فقط. لا تظهر CareerPilot الآن. جهز اللابتوب وافتح الأدوات والملفات التجريبية مسبقاً بالخلفية.</p>
+<p class="dir">[قبل أول كلمة] وقف بمنتصف القاعة، ابتسم، واترك ثانيتين حتى يهدأ الحضور. لا تبدأ بتعريف طويل أو سيرة ذاتية.</p>
+<p class="dir">[00:00 — احكي بسرعة هادئة وواثقة]</p>
+<p>صباح الخير جميعاً، كيفكم اليوم؟ إن شاء الله تكونوا بخير.</p>
+<p>بدايةً، أنا سيف رضا، مهندس برمجيات في شركة IIACSS، المجموعة المستقلة.</p>
+<p>خلال شغلي اشتغلت على عدة مشاريع هدفها توظيف الذكاء الاصطناعي عشان نخلي الشغل أدق، وأسرع، وأكثر تنظيماً.</p>
+<p>وواحدة من الشغلات اللي لاحظتها إنه كثير من الناس صارت تستخدم الذكاء الاصطناعي بشكل يومي، لكن مش بالضرورة تكون فاهمة شو اللي بصير فعلياً وراء هاي الأدوات.</p>
+<p>اليوم ورشتنا رح تكون عن كيف نبني CV احترافي باستخدام الذكاء الاصطناعي، بطريقة صحيحة ومنطقية، تناسب مختلف الوظائف والتخصصات. مش مهم إذا كنت بتدرس هندسة، إدارة أعمال، محاسبة، تسويق، تمريض، تصميم، أو أي تخصص ثاني.</p>
+<p>الفكرة إنه كل واحد فيكم يطلع من هون عارف كيف يقدّم مهاراته وخبراته بطريقة أفضل.</p>
+<p>بس قبل ما نبدأ بموضوع الورشة الأساسي، عندي سؤال إلكم.</p>
+<p class="dir">[اضغط للسلايد التالي]</p>
+</div>
+<i class="ring"></i><i class="ring"></i><i class="ring"></i>
+<div class="center col">
+<h1>AI IS MORE THAN <span class="grad">CHATGPT</span></h1>
+<p class="lead">Understand it. Use it. Build your future.</p>
+</div>
+</section>
+
+<!-- 2 ─ OPENING QUESTION -->
+<section class="slide" data-title="The Opening Question" data-time="00:00 – 04:00">
+<div class="notes">
+<p class="dir">[توقف قليلاً وانظر إلى الطلاب]</p>
+<p class="key">شو آخر AI Tool استخدمتوه؟</p>
+<p class="dir">[انتظر]</p>
+<p>ChatGPT؟ Claude؟ Gemini؟ ولا في إشي ثاني؟</p>
+<p class="dir">[إذا رفعوا إيديهم، اختَر أول طالب]</p>
+<p>طيب، شو استخدمته فيه؟ أسألك سؤال دراسي؟ تحل Assignment؟ تختار لبسة؟ تكتب رسالة؟ ولا يمكن سألت سؤال ما إله علاقة بالدراسة أصلاً؟</p>
+<p class="dir">[خلي الطالب يحكي ولا تقاطعه. خذ إجابة ثانية من تخصص مختلف، ثم ثالثة أو رابعة حسب الوقت. فقط 3–4 مشاركات.]</p>
+<p>ممتاز يا جماعة. بس بدي إياكم تركزولي على كلمة أنا تعمدت أستخدمها.</p>
+<p>أنا ما سألتكم شو آخر AI استخدمتوه. أنا سألتكم شو آخر AI <b>Tool</b> استخدمتوه. ليش حكيت Tool؟ رح أحكيلكم هسا.</p>
+<p class="dir">[إذا ما شارك حدا: «أنا شخصياً استخدمت أدوات AI في تحليل معلومات وتحسين خطوات شغل متكررة.» وتابع.]</p>
+<p class="dir">[مقدمة الـAI لازم تنتهي عند الدقيقة 15 حتى ما نخسر الجزء العملي.]</p>
+</div>
+<div class="kicker">Warm-up</div>
+<h1 style="max-width:62rem">What was the last AI <span class="word hl" data-h="2">TOOL</span> you used?</h1>
+<div style="display:flex;gap:1rem;margin-top:2.4rem;flex-wrap:wrap">
+<span class="chip" data-s="1">ChatGPT?</span><span class="chip" data-s="1">Claude?</span><span class="chip" data-s="1">Gemini?</span><span class="chip" data-s="1">Something else?</span>
+</div>
+<p class="lead" data-s="2" style="margin-top:2rem">Notice the word: not “AI” — <b style="color:var(--b)">Tool</b>. Why? Let’s find out.</p>
+</section>
+
+<!-- 3 ─ WHAT IS AI -->
+<section class="slide" data-title="What Is AI?" data-time="04:00 – 05:30">
+<div class="notes">
+<p>طيب. كلنا بنسمع مصطلح AI، ومعظمنا عنده فكرة عامة عنه. بس خليني أسألكم: شو هو الذكاء الاصطناعي؟ أو بطريقة ثانية: لما تكتب سؤال لـChatGPT ويجاوبك، من وين جاب هالإجابة؟</p>
+<p class="dir">[انتظر. خلي 3 طلاب يجاوبوا. إجابات متوقعة: «من الإنترنت»، «من قاعدة بيانات»، «بتعلم من المعلومات»، «بعرف يتوقع». استقبلها بدون ما تحرج أي حدا.]</p>
+<p>ممتاز. في إجاباتكم نقاط مهمة، وخلينا نجمعها ونفهم الموضوع بشكل أبسط.</p>
+<p>AI اختصار لـArtificial Intelligence. وهو مش برنامج واحد، ومش شركة واحدة، ومش محصور بـChatGPT.</p>
+<p>الذكاء الاصطناعي هو مجال كامل بنحاول فيه نطور أنظمة تقدر تعمل مهام عادةً بتحتاج لقدرات بشرية: فهم اللغة، التعرف على الصور، التنبؤ، واتخاذ قرارات ضمن مهام محددة.</p>
+<p>لما تفتح تلفونك ويتعرف على وجهك، ممكن تكون تقنية ذكاء اصطناعي. لما تطبيق يعطيك اقتراحات لأغاني أو فيديوهات، كذلك. ولما نظام يحلل صورة طبية ويساعد المختص يحدد أشياء معينة، هذا برضه تطبيق للذكاء الاصطناعي.</p>
+<p class="key">يعني AI أكبر بكثير من فكرة إنه في شاشة بنكتب فيها سؤال وبيجينا جواب.</p>
+</div>
+<div class="kicker">The big picture</div>
+<h2>WHAT IS <span class="grad">ARTIFICIAL INTELLIGENCE?</span></h2>
+<p class="lead" style="margin-bottom:2rem">A whole <b style="color:var(--ink)">field</b>: building systems that perform tasks that normally need human abilities — understanding language, recognizing images, predicting, deciding.</p>
+<div class="grid g4">
+<div class="card" data-s="1"><span class="ico">🔓</span><h3>Face unlock</h3><p>Your phone recognizes you.</p></div>
+<div class="card" data-s="2"><span class="ico">🎵</span><h3>Recommendations</h3><p>Songs and videos picked for you.</p></div>
+<div class="card" data-s="3"><span class="ico">🩻</span><h3>Medical imaging</h3><p>Helping specialists spot things.</p></div>
+<div class="card" data-s="4"><span class="ico">💬</span><h3>Chatbots</h3><p>ChatGPT, Claude… just one corner of AI.</p></div>
+</div>
+</section>
+
+<!-- 4 ─ LLM + VIDEO -->
+<section class="slide" data-title="LLM = Large Language Model" data-time="05:30 – 07:00">
+<div class="notes">
+<p>طيب، خلينا نرجع للشغلة اللي بتهمنا. ChatGPT وClaude وغيرهم، هاي الأدوات بتستخدم نوع مهم من نماذج الذكاء الاصطناعي اسمه <b>LLM</b>.</p>
+<p>LLM اختصار لـLarge Language Model، بالعربي: نموذج لغوي كبير. شو يعني؟ تخيلوا نظام تدرب على كميات هائلة من النصوص والمعلومات اللغوية.</p>
+<p>خلال التدريب بتتعدل أرقام داخلية كثيرة جداً اسمها Parameters، عشان النموذج يتعلم أنماط اللغة والعلاقات بين الكلمات والأفكار والمفاهيم.</p>
+<p>لما تكتبله سؤال، بستخدم الأنماط اللي تعلمها، وحسب سياق المحادثة ببدأ ينتج الإجابة جزءاً بعد جزء. تقنياً، التوليد مبني على توقع الجزء المناسب التالي من النص، اللي بنسميه Tokens.</p>
+<p>بس الموضوع مش مجرد إنه يحفظ جملة ويكررها. النموذج بتعلم أنماط معقدة بتخليه يقدر يشرح ويلخص ويترجم ويقارن، وأحياناً يحل مسائل متعددة الخطوات.</p>
+<p class="key">ومع ذلك، ممكن يغلط. ممكن يفهم قصدك غلط. وممكن يطلعلك معلومة شكلها مقنع لكنها مش صحيحة.</p>
+<p class="dir">[هون شغّل الفيديو إذا حطيت رابطه في CONFIG داخل الكود. بعد ما تخلص اضغط في أي مكان فاضي بالصفحة عشان ترجع الأسهم تشتغل.]</p>
+</div>
+<div class="grid" style="grid-template-columns:1.05fr 1fr;gap:3rem;align-items:center">
+<div>
+<div class="kicker">Inside the AI’s brain</div>
+<h2>LLM = <span class="grad">LARGE LANGUAGE MODEL</span></h2>
+<div class="col" style="gap:1rem">
+<div class="card" data-s="1"><h3>① Trained on huge amounts of text</h3><p>Books, articles, conversations — patterns of language at massive scale.</p></div>
+<div class="card" data-s="2"><h3>② Billions of internal numbers</h3><p>“Parameters” adjust during training to capture relationships between words and ideas.</p></div>
+<div class="card" data-s="3"><h3>③ Generates piece by piece</h3><p>Predicts the next <b style="color:var(--a)">token</b> again and again to build an answer.</p></div>
+<span class="tag t-warn" data-s="4" style="align-self:flex-start">⚠ Can sound confident — and still be wrong</span>
+</div>
+</div>
+<div class="video" id="brainVideo"></div>
+</div>
+</section>
+
+<!-- 5 ─ NOT GOOGLE -->
+<section class="slide" data-title="Is Every Answer a Google Search?" data-time="07:00 – 08:00">
+<div class="notes">
+<p>طيب، بناءً على هالحكي، هل كل إجابة بتطلع من ChatGPT معناها إنه فتح Google وبحث عنها؟</p>
+<p class="dir">[خذ جواباً]</p>
+<p>لأ، مش بالضرورة. النموذج عادةً بستخدم المعلومات والأنماط اللي تعلمها أثناء التدريب، مع الكلام اللي أنت أعطيته في المحادثة.</p>
+<p>وبعض التطبيقات ممكن يكون عندها أدوات للبحث على الإنترنت أو قراءة ملفات أو تنفيذ مهام. بس هذا مش معناه إنه كل جواب جديد إجا من بحث مباشر. وعشان هيك، لما يكون عندك معلومة مهمة، لازم تتأكد منها.</p>
+<p class="key">الـAI ممكن يساعدك تفكر وتشتغل أسرع، لكن مش المفروض تلغي تفكيرك عشان عندك AI.</p>
+</div>
+<div class="kicker">Think about it</div>
+<h2>IS EVERY ANSWER <span class="grad">A GOOGLE SEARCH?</span></h2>
+<div class="grid g3">
+<div class="card" data-s="1"><span class="ico">🧠</span><h3>Patterns from training</h3><p>What the model learned before you ever typed a word.</p></div>
+<div class="card" data-s="2"><span class="ico">💬</span><h3>Your conversation</h3><p>What you wrote and shared with it, right now.</p></div>
+<div class="card" data-s="3"><span class="ico">🛠️</span><h3>Sometimes tools</h3><p>Web search, reading files — only if the app has them.</p></div>
+</div>
+<div class="quote" data-s="4">AI can help you think and work faster —<br>it shouldn’t replace your thinking.</div>
+</section>
+
+<!-- 6 ─ AI → MODEL → TOOL -->
+<section class="slide" data-title="AI → MODEL → TOOL" data-time="08:00 – 11:00">
+<div class="notes">
+<p>هسا رجعنا للكلمة اللي حكيتلكم تركزوا عليها من أول الورشة: <b>Tool</b>. خلينا نفرق بين ثلاث شغلات.</p>
+<p>أول إشي عندنا مجال اسمه Artificial Intelligence. داخل هذا المجال في أنواع مختلفة من النماذج والتقنيات، ومنها Large Language Models.</p>
+<p>طيب ChatGPT وين موقعه؟ هو تطبيق من شركة OpenAI بيعطينا واجهة نتعامل من خلالها مع نماذج ذكاء اصطناعي، ومنها عائلة GPT. يعني GPT اسم لعائلة نماذج، بينما ChatGPT اسم المنتج اللي بتستخدمه. وبالنسبة لـClaude، في منتجات ونماذج من شركة Anthropic بتحمل اسم Claude.</p>
+<p class="dir">[اعرض مثال السيارة]</p>
+<p>في عندك السيارة كاملة، وفي عندك المحرك. المحرك جزء مهم لكنه مش كل السيارة. النموذج زي المحرك، والتطبيق هو النظام اللي بخليك تستفيد من قدراته وبيضيفله واجهة وأدوات وخدمات.</p>
+<p>ومش كل الأدوات عندها نفس الإمكانيات: أداة تقرأ ملفات، أداة تبحث على الإنترنت، أداة تولّد صور، وأداة ترتب شغل من عدة خطوات.</p>
+<p class="dir">[توقف]</p>
+<p class="key">إذا أنا وإنت استخدمنا نفس الأداة، هل بالضرورة نطلع بنفس النتيجة؟</p>
+<p>أكيد لأ، لأنه في عامل ثالث مهم جداً: اللي هو <b>أنت</b>. شو المعلومات اللي أعطيتها للأداة؟ شو طلبت منها؟ وشو راجعت من النتيجة؟</p>
+</div>
+<div class="kicker">The word I told you to notice</div>
+<h2>AI <span class="grad">→ MODEL → TOOL</span></h2>
+<div class="flow">
+<div class="card" data-s="1"><span class="tag t-info">The field</span><div class="big" style="margin:.8rem 0">Artificial Intelligence</div><p>Vision, language, prediction…</p></div>
+<div class="arrow" data-s="2">→</div>
+<div class="card" data-s="2"><span class="tag t-info">The model</span><div class="big" style="margin:.8rem 0">LLMs · GPT family</div><p>The “engine”.</p></div>
+<div class="arrow" data-s="3">→</div>
+<div class="card" data-s="3"><span class="tag t-good">The tool</span><div class="big" style="margin:.8rem 0">ChatGPT · Claude</div><p>The product you actually use.</p></div>
+</div>
+<div class="grid g2" style="margin-top:1.6rem">
+<div class="card" data-s="4"><h3>🚗 Think of a car</h3><p>The model is the <b>engine</b>. The tool is the <b>whole car</b> — interface, features and services around it.</p></div>
+<div class="card" data-s="5" style="border-color:var(--b)"><h3>🙋 Same tool ≠ same result</h3><p>Because there’s a third factor: <b style="color:var(--b)">you</b> — what you gave it, what you asked, what you reviewed.</p></div>
+</div>
+</section>
+
+<!-- 7 ─ FORMULA -->
+<section class="slide center" data-title="The Formula" data-time="11:00 – 12:00">
+<div class="notes">
+<p>هاي الثلاث شغلات خلينا نتذكرها طول الورشة:</p>
+<p class="key">المعلومات الصح. الأداة المناسبة. والمراجعة البشرية.</p>
+</div>
+<div class="kicker">Remember this all workshop</div>
+<div class="flow" style="width:100%;max-width:70rem;margin-top:1rem">
+<div class="card" data-s="1"><span class="ico">📝</span><div class="big">GOOD INPUT</div><p>The right information</p></div>
+<div class="arrow" data-s="2">+</div>
+<div class="card" data-s="2"><span class="ico">🧰</span><div class="big">RIGHT TOOL</div><p>Fit for the job</p></div>
+<div class="arrow" data-s="3">+</div>
+<div class="card" data-s="3"><span class="ico">👀</span><div class="big">HUMAN REVIEW</div><p>You check the result</p></div>
+</div>
+</section>
+
+<!-- 8 ─ AI WORDS -->
+<section class="slide" data-title="AI Words You Keep Hearing" data-time="12:00 – 15:00">
+<div class="notes">
+<p>قبل ما نفوت بعنوان الورشة الأساسي، في كم مصطلح أكيد مر عليكم، سواء وإنتوا بتستخدموا أدوات AI أو حتى وإنتوا بتقلبوا على الريلز. خلينا نفهمهم بسرعة.</p>
+<p><b>Prompt</b> — التعليمات أو السؤال اللي بتعطيه للأداة. بس الـPrompt الجيد مش بالضرورة يكون طويل، المهم يكون واضح. بدل «اعمللي CV» احكي: «ساعدني أبني CV لوظيفة في التسويق، اسألني عن خبرتي ومهاراتي، ولا تضيف أي معلومة من عندك». هيك صار عند الأداة سياق وتعليمات أوضح.</p>
+<p><b>Agent</b> — تخيلوا إنك مش بس بتسأل وبيعطيك جواب، أنت بتعطيه هدف، وهو بقدر يخطط لعدة خطوات، ويستخدم أدوات متاحة إله، وينفذ أجزاء من المهمة ضمن الصلاحيات اللي أعطيته إياها. مثلاً تنظيم فعالية جامعية: المساعد العادي بكتبلك خطة، أما Agent موصول بتقويم وملفات فبراجع المواعيد ويرتب المهام ويجهز مسودات رسائل ويطلب موافقتك عند الخطوات المهمة. انتبهوا: مش أي Chatbot اسمه Agent.</p>
+<p><b>Tokens</b> — أجزاء النص اللي النموذج بيعالجها وبيولدها. أحياناً الكلمة Token واحد وأحياناً عدة Tokens. وجود حدود للـTokens بيفسر ليش بعض النماذج عندها حدود لطول المحادثة أو المستندات.</p>
+<p><b>Hallucination</b> — يطلعلك معلومة غير صحيحة أو غير مثبتة وهو بحكيها بثقة. مثلاً تحكيله «أنا طالب إدارة أعمال وما اشتغلت قبل» فيكتبلك «اشتغلت مدير مبيعات سنتين»! هذا مش تحسين CV، هاي معلومة مختلقة.</p>
+<p class="key">رح نظل نرجع لنفس المبدأ اليوم: ما بنضيف معلومة إلا إذا إلها أساس حقيقي.</p>
+<p>حبيت أدخل بهاي المقدمة عشان لما تفتحوا أي AI Tool بعد اليوم تكونوا فاهمين شو الأداة اللي قدامكم وشو قدرتها وشو حدودها. هسا بعد ما فهمنا الأساسيات، خلينا ندخل بموضوعنا الحقيقي.</p>
+</div>
+<div class="kicker">Vocabulary</div>
+<h2>AI WORDS <span class="grad">YOU KEEP HEARING</span></h2>
+<div class="grid g2" style="gap:1.2rem">
+<div class="card" data-s="1"><h3 style="color:var(--a)">Prompt</h3><p>The instruction you give the tool. Clear beats long.</p><p style="margin-top:.5rem"><span class="tag t-bad">Vague</span> “Make me a CV.”<br><span class="tag t-good">Clear</span> “Help me build a CV for a marketing job. Ask me about my experience. Don’t add anything I didn’t tell you.”</p></div>
+<div class="card" data-s="2"><h3 style="color:var(--d)">AI Agent</h3><p>You give it a <b>goal</b>. It plans steps, uses the tools it’s allowed to, and asks approval on important ones. Not every chatbot is an agent.</p><p style="margin-top:.5rem">Goal → Plan → Use tools → Ask you</p></div>
+<div class="card" data-s="3"><h3 style="color:var(--b)">Tokens</h3><p>The pieces of text a model reads and writes. A word can be one token or several — and limits on tokens explain limits on chat or document length.</p></div>
+<div class="card" data-s="4" style="border-color:var(--bad)"><h3 style="color:var(--bad)">Hallucination</h3><p>A wrong or unproven answer, said with confidence.</p><p style="margin-top:.5rem">“Business student, no work experience” → <span style="color:var(--bad)">“Sales Manager for 2 years”</span> ✗<br>That’s not improving a CV. That’s invention.</p></div>
+</div>
+</section>
+
+<!-- 9 ─ SECTION -->
+<section class="slide center" data-title="Your CV Is Your First Introduction" data-time="15:00">
+<div class="notes">
+<p class="dir">[بدّل السلايد — لحظة صمت قصيرة، هون بدأ الموضوع الحقيقي]</p>
+<p class="key">YOUR CV IS YOUR FIRST PROFESSIONAL INTRODUCTION</p>
+</div>
+<div class="kicker">Part two</div>
+<h1 style="max-width:64rem">YOUR CV IS YOUR <span class="grad">FIRST PROFESSIONAL INTRODUCTION</span></h1>
+</section>
+
+<!-- 10 ─ CV BEFORE (ZOOM) -->
+<section class="slide cv" data-title="CV #1 — Lina (Before)" data-time="15:00 – 22:00"
+ data-zoom="full,header,about,skills"
+ data-captions="Lina’s CV, as most students write it|Name and title — fine, but generic|“Hardworking and motivated” — what is the proof?|A list of skills — where is the evidence?">
+<div class="notes">
+<p>خلينا نبدأ بسؤال. مين هون عنده CV جاهز؟ <span class="dir">[اطلب رفع الأيدي]</span> ومين عمره ما عمل CV؟ <span class="dir">[لا تعلق بطريقة محرجة]</span></p>
+<p>ممتاز. خليني أحكيلكم شغلة: مش كل طالب ما عنده CV معناها ما عنده خبرة مفيدة. ومش كل طالب عنده CV معناها إنه كاتب خبرته بالطريقة المناسبة.</p>
+<p class="dir">[الخطوة 0 — السيرة كاملة. اضغط → للتقريب على كل قسم بالترتيب: الاسم ← About Me ← Skills]</p>
+<p>شوفوا هاي السيرة. هي مش سيئة بالضرورة. بس لو كنت مسؤول توظيف، شو فهمت من كلمة <b>hardworking</b>؟ وشو الدليل إنه هاي الطالبة عندها مهارات <b>Teamwork</b>؟</p>
+<p class="dir">[خذ جوابين]</p>
+<p class="key">بالضبط. هي حكت عن صفات، لكن ما حكت شو عملت فعلياً.</p>
+<p>خلينا نفترض إن ليان شاركت بتنظيم فعالية جامعية، وكانت تتواصل مع المشاركين، وتتابع التسجيلات باستخدام Excel. هاي تجربة حقيقية ضمن مثالنا. بس ليان ممكن تفكر: «أنا ما اشتغلت بشركة، فهاي مش خبرة مهمة». مع إنها ممكن تكون تجربة مفيدة لوظيفة في الإدارة أو تنسيق الفعاليات أو خدمة العملاء.</p>
+</div>
+<div class="cv-tag"><div class="kicker">CV #1</div><span class="tag t-bad">Before</span></div>
+<div class="cv-stage"><div class="paper">
+<div data-f="header"><span class="flag bad">Generic</span><h4>Lina Ahmad</h4><div class="sub">Business Administration Student</div></div>
+<div data-f="about"><span class="flag bad">Adjectives, no evidence</span><h5>About Me</h5><p>I am a hardworking and motivated student seeking a challenging position.</p></div>
+<div data-f="skills"><span class="flag bad">Claims, not proof</span><h5>Skills</h5><p>Communication, Excel, Teamwork</p></div>
+<div style="height:260px"></div>
+</div></div>
+<div class="caption"></div>
+</section>
+
+<!-- 11 ─ EVIDENCE -->
+<section class="slide" data-title="Adjectives vs Evidence" data-time="18:00 – 20:00">
+<div class="notes">
+<p class="dir">[اعرض النسخة الأفضل]</p>
+<p>بدل ما نكتب: <span class="en">Good communication and teamwork skills</span>، ممكن نكتب: <span class="en">Coordinated participant registration and communication for a university event, using Excel to organize attendee information.</span></p>
+<p class="key">لاحظوا الفرق. الجملة الثانية شرحت شو عملت فعلياً. ما اخترعنا وظيفة، وما أعطيناها لقب مديرة فعاليات. بس عبّرنا عن مشاركتها بطريقة مهنية.</p>
+</div>
+<div class="kicker">Same person. Same truth.</div>
+<h2>FROM <span class="grad">ADJECTIVES</span> TO EVIDENCE</h2>
+<div class="grid g2">
+<div class="card" data-s="1" style="border-color:var(--bad)"><span class="tag t-bad">Before</span><p style="font-size:1.7rem;color:var(--ink);margin-top:1rem;line-height:1.4">“Good communication and teamwork skills.”</p><p style="margin-top:1rem">Says <i>what she is</i>. Shows nothing.</p></div>
+<div class="card" data-s="2" style="border-color:var(--good)"><span class="tag t-good">After</span><p style="font-size:1.7rem;color:var(--ink);margin-top:1rem;line-height:1.4">“Coordinated participant registration and communication for a university event, using Excel to organize attendee information.”</p><p style="margin-top:1rem">Says <i>what she did</i>. No invented job title.</p></div>
+</div>
+</section>
+
+<!-- 12 ─ OTHER MAJORS -->
+<section class="slide" data-title="Every Major Has Real Experience" data-time="20:00 – 22:00">
+<div class="notes">
+<p>نفس الفكرة بتنطبق على طالب محاسبة اشتغل على تحليل ميزانية في مشروع جامعي. وعلى طالب تصميم جهز حملة بصرية. وعلى طالب هندسة شارك بإعداد مخططات أو مشروع تخرج. وعلى طالب تمريض شارك بتدريب عملي، مع توضيح المهام اللي قام فيها فعلاً وتحت أي إشراف.</p>
+<p class="key">المهم إنك تعرف شو عندك، وتعرف كيف تعرضه.</p>
+<p class="dir">[اسأل الحضور]</p>
+<p>مين عنده نشاط أو مشروع أو تدريب وبحس إنه مش عارف إذا بنفع ينحط بالـCV؟</p>
+<p class="dir">[خذ مثالاً واحداً لمدة دقيقة. إذا سألك طالب غير تقني: ارجع لفكرة الدليل الحقيقي — أي مشروع أو تدريب أو نشاط يُعرض إذا كان صحيحاً دون تحويله لوظيفة مختلقة.]</p>
+<p>ممتاز. هسا خلينا نشوف كيف الـAI ممكن يساعدنا نطلع هاي المعلومات بشكل مرتب.</p>
+</div>
+<div class="kicker">It’s not only for business students</div>
+<h2>KNOW WHAT YOU HAVE. <span class="grad">SHOW IT RIGHT.</span></h2>
+<div class="grid g4">
+<div class="card" data-s="1"><span class="ico">📊</span><h3>Accounting</h3><p>Analyzed a budget in a university project.</p></div>
+<div class="card" data-s="2"><span class="ico">🎨</span><h3>Design</h3><p>Prepared a visual campaign.</p></div>
+<div class="card" data-s="3"><span class="ico">📐</span><h3>Engineering</h3><p>Contributed to drawings or a graduation project.</p></div>
+<div class="card" data-s="4"><span class="ico">🩺</span><h3>Nursing</h3><p>Clinical training — the tasks you performed, and under whose supervision.</p></div>
+</div>
+<p class="lead" data-s="5" style="margin-top:2rem">Who here has a project, activity or internship and isn’t sure it belongs on a CV?</p>
+</section>
+
+<!-- 13 ─ DON'T ASK AI TO INVENT YOU -->
+<section class="slide" data-title="Don’t Ask AI to Invent You" data-time="22:00 – 25:00">
+<div class="notes">
+<p>أكثر طلب مشهور بنشوفه هو: <span class="en">Write me a professional CV.</span> خلينا نفكر فيها. إذا النموذج ما بعرفك، وما بعرف شو درست، وما بعرف شو اشتغلت، كيف بدك إياه يكتب CV دقيق؟ ممكن يكتب كلام عام، وممكن يخمن أشياء. بس إحنا مش بدنا CV شكله احترافي فقط. <b>بدنا CV محتواه صحيح.</b></p>
+<p class="dir">[افتح أداة ذكاء اصطناعي مناسبة للعرض — الخطوة 2 تعرض البرومبت]</p>
+<p>أنا بفضّل نبلش بطريقة ثانية. بدل ما نحكيله «اعمل CV» مباشرة، نخليه يعمل <b>Interview</b> معنا. يسألنا أسئلة، يجمع المعلومات، وبعدين يبني السيرة.</p>
+<p class="dir">[اعرض البرومبت على الشاشة]</p>
+</div>
+<div class="kicker">Building a CV with AI</div>
+<h2>DON’T ASK AI <span class="grad">TO INVENT YOU</span></h2>
+<div class="card" data-s="1" style="border-color:var(--bad);max-width:46rem;margin-bottom:1.2rem"><span class="tag t-bad">Common request</span><p style="font-size:1.6rem;color:var(--ink);margin-top:.6rem">“Write me a professional CV.”</p><p>It doesn’t know you → generic text, or guesses.</p></div>
+<div class="code" data-s="2"><b>Act as a professional CV advisor.</b>
+Help me build a CV from scratch.
+<b>Ask me one question at a time</b> about my:
+education, projects, internships, work,
+volunteering, skills, and achievements.
+I may be a student with no work experience.
+<b>Use only information I provide.
+Do not invent facts or qualifications.</b>
+Ask follow-up questions when details are unclear.
+When I say I am finished, organize my information
+and let me review it before writing my professional CV.</div>
+</section>
+
+<!-- 14 ─ INTERVIEW DEMO -->
+<section class="slide" data-title="Let the AI Interview You" data-time="25:00 – 28:00">
+<div class="notes">
+<p class="dir">[شغّل البرومبت مباشرة، واستخدم مثال ليان — طالبة إدارة أعمال، ما عندها وظيفة سابقة، شاركت بفعالية جامعية، استخدمت Excel وتواصلت مع المشاركين، ما عندها شهادات إضافية]</p>
+<p>شوفوا شو صار. بدل ما يعطيني CV جاهز من فراغ، بلش يسألني. وهون إحنا حولنا الأداة من مجرد مولد نصوص لمساعد يجمع معلومات.</p>
+<p>ركزوا كيف أجاوب. ما لازم أحكي لغة رسمية. ممكن أحكيله: «أنا طالبة إدارة أعمال. ما اشتغلت قبل، بس ساعدت بتنظيم فعالية بالجامعة وكنت مسؤولة عن تسجيل المشاركين والتواصل معهم.» والأداة المفروض تساعدني بأسئلة متابعة: شو الأدوات اللي استخدمتيها؟ شو كان دورك تحديداً؟ هل عندك مثال على نتيجة من شغلك؟</p>
+<p class="key">إذا سأل عن عدد المشاركين وإحنا ما بنعرف الرقم، ما نخترع واحد. إذا سأل عن شهادة مش موجودة، ما بنضيفها. إذا كتب مسؤولية بشكل غير دقيق، بنصححها.</p>
+</div>
+<div class="kicker">The AI as an interviewer</div>
+<h2>HOW IT <span class="grad">SHOULD GO</span></h2>
+<div class="chat">
+<div class="bub me" data-s="1" dir="rtl"><small>LINA</small>أنا طالبة إدارة أعمال. ما اشتغلت قبل، بس ساعدت بتنظيم فعالية بالجامعة وكنت مسؤولة عن تسجيل المشاركين والتواصل معهم.</div>
+<div class="bub ai" data-s="2"><small>AI</small>Great start! Which tools did you use? What was your exact role? Do you have an example of a result from your work?</div>
+<div class="bub me" data-s="3" dir="rtl"><small>LINA</small>استخدمت Excel لمتابعة التسجيلات. بس ما بعرف العدد الدقيق للمشاركين.</div>
+<div class="bub ai" data-s="4"><small>AI</small>No problem — I won’t include a number. We’ll only write what you can prove.</div>
+</div>
+</section>
+
+<!-- 15 ─ EXERCISE -->
+<section class="slide" data-title="Your Turn (45 seconds)" data-time="28:00 – 30:00">
+<div class="notes">
+<p>بدي كل واحد هسا يفكر بشغلة واحدة عملها خلال دراسته. ممكن تكون مشروع، تدريب، فعالية، تطوع، أو حتى شغل جزئي خارج تخصصه. اسأل حالك:</p>
+<p>شو كان دوري؟ شو عملت بإيدي؟ شو الأدوات أو المهارات اللي استخدمتها؟ شو النتيجة اللي بقدر أثبتها؟</p>
+<p class="dir">[امنح الطلاب 30–45 ثانية. اضغط زر Start لتشغيل المؤقت.]</p>
+<p class="key">هاي الثلاث أو أربع إجابات هي مادة ممتازة لبلش تبني منها CV. مش مطلوب تكون خبير أو عندك عشر سنوات خبرة.</p>
+<p>(بعدها اعرض الـCV المحسن في السلايد التالي.)</p>
+</div>
+<div class="grid" style="grid-template-columns:1.3fr 1fr;gap:3rem;align-items:center">
+<div>
+<div class="kicker">Interactive</div>
+<h2>THINK OF <span class="grad">ONE THING</span> YOU DID</h2>
+<p class="lead" style="margin-bottom:1.4rem">A project, internship, event, volunteering — or a part-time job outside your major.</p>
+<div class="col" style="gap:.8rem">
+<div class="card" data-s="1" style="padding:1rem 1.4rem"><h3 style="margin:0">1 · What was my role?</h3></div>
+<div class="card" data-s="2" style="padding:1rem 1.4rem"><h3 style="margin:0">2 · What did I actually do?</h3></div>
+<div class="card" data-s="3" style="padding:1rem 1.4rem"><h3 style="margin:0">3 · Which tools or skills did I use?</h3></div>
+<div class="card" data-s="4" style="padding:1rem 1.4rem"><h3 style="margin:0">4 · What result can I prove?</h3></div>
+</div>
+</div>
+<div class="card center col" style="padding:3rem 2rem;gap:1.2rem">
+<div class="timer" id="timer">00:45</div>
+<button class="btn" id="timerBtn" onclick="startTimer()">▶ Start</button>
+</div>
+</div>
+</section>
+
+<!-- 16 ─ CV AFTER (ZOOM) -->
+<section class="slide cv" data-title="CV #2 — Lina (After)" data-time="30:00 – 32:00"
+ data-zoom="full,summary,education,experience,skills"
+ data-captions="The improved CV — facts reviewed and approved|Summary: built only from what Lina shared|Education: clear and easy to scan|Experience: what she did, not just who she is|Skills: tools and abilities backed by the experience above">
+<div class="notes">
+<p class="dir">[اعرض الـCV المحسن — اضغط → للتقريب على كل قسم: Summary ← Education ← Experience ← Skills]</p>
+<p>شايفين؟ صار عندنا تعليم، ومهارات، وتجربة جامعية واضحة. والأفضل إنه صار عندنا ملف نقدر نراجعه ونعدله.</p>
+<p class="dir">[لاحظ للطلاب: كل جملة هون إلها أصل بكلام ليان — ما في أرقام مخترعة ولا شهادات ولا ألقاب. الأقواس [ ] أماكن لبياناتها الحقيقية.]</p>
+<p class="key">لكن في سؤال مهم: هل نفس الـCV مناسب لكل وظيفة؟</p>
+</div>
+<div class="cv-tag"><div class="kicker">CV #2</div><span class="tag t-good">After</span></div>
+<div class="cv-stage"><div class="paper">
+<div data-f="header"><h4>Lina Ahmad</h4><div class="sub">Business Administration Student</div><div class="small" style="margin-top:6px">[City, Country] · [email] · [phone] · [LinkedIn]</div></div>
+<div data-f="summary"><span class="flag good">Grounded in real experience</span><h5>Summary</h5><p>Business Administration student with hands-on experience coordinating a university event, including participant communication and registration tracking in Excel. Seeking an entry-level role in administration or event coordination.</p></div>
+<div data-f="education"><span class="flag good">Clear structure</span><h5>Education</h5><p><b>Bachelor of Business Administration</b><br>[University Name] · [Expected graduation year]</p></div>
+<div data-f="experience"><span class="flag good">Evidence, not adjectives</span><h5>Experience</h5><p><b>University Event — Organizing Team</b> <span class="small">[Dates]</span></p><ul><li>Coordinated participant registration and communication for a university event.</li><li>Used Excel to organize attendee information and follow registrations.</li></ul></div>
+<div data-f="skills"><span class="flag good">Backed by the experience above</span><h5>Skills</h5><p><b>Tools:</b> Microsoft Excel<br><b>Strengths:</b> Participant communication · Registration coordination · Event support</p></div>
+<div style="height:90px"></div>
+</div></div>
+<div class="caption"></div>
+</section>
+
+<!-- 17 ─ ATS -->
+<section class="slide" data-title="ATS: One CV, Different Employers" data-time="32:00 – 38:00">
+<div class="notes">
+<p>غالباً سمعتوا بكلمة <b>ATS</b>. هي اختصار لـApplicant Tracking System. هاي أنظمة بتستخدمها الشركات لاستقبال وتنظيم ومتابعة طلبات التوظيف. بعض الأنظمة بتساعد بالبحث والفرز وفق معايير الوظيفة. لكن مش كل ATS بشتغل بنفس الطريقة، ومش صحيح إنه في نسبة سحرية واحدة لازم كل CV يحققها عشان ينجح.</p>
+<p class="dir">[اعرض النسختين]</p>
+<p>لو أنت مسؤول توظيف وبدك شخص يشتغل Event Coordinator، أي وصف بعطيك معلومات أوضح؟ <span class="dir">[انتظر]</span> أكيد الثاني، لأنه فيه تفاصيل مرتبطة بالشغل.</p>
+<p>طيب لو الوظيفة محاسبة؟ رح يكون عندي متطلبات مختلفة. ولو الوظيفة تصميم؟ برضه مختلفة. عشان هيك ما بنكتب CV واحد ونفترض إنه دائماً أفضل نسخة لكل وظيفة.</p>
+<p class="key">Recruiters need evidence, not just adjectives.</p>
+<p>والتنسيق كمان مهم: عناوين واضحة، أقسام منظمة، معلومات قابلة للقراءة. وما نحشي مصطلحات من الإعلان لمجرد إنه النظام يقرأها. إذا الشركة طالبة شهادة أو مهارة مش عندك، ما بصير نكتبها عشان نظهر مناسبين.</p>
+<p class="dir">[انتقال] خلينا نروح لهسا على إعلان وظيفة، ونشوف كيف نربط بينه وبين الـCV.</p>
+</div>
+<div class="kicker">How employers read CVs</div>
+<h2>ONE CV, <span class="grad">DIFFERENT EMPLOYERS</span></h2>
+<div class="card" data-s="1" style="margin-bottom:1.2rem"><h3>ATS = Applicant Tracking System</h3><p>Software companies use to receive, organize and track applications. Some help search and filter by job criteria — but not all work the same, and there’s no magic score every CV must hit.</p></div>
+<div class="grid g2">
+<div class="card" data-s="2"><span class="tag t-warn">Version A</span><p style="font-size:1.5rem;color:var(--ink);margin-top:.8rem">“Good communication and organization skills.”</p></div>
+<div class="card" data-s="3" style="border-color:var(--good)"><span class="tag t-good">Version B</span><p style="font-size:1.5rem;color:var(--ink);margin-top:.8rem">“Coordinated student event registrations and communicated scheduling information to participants.”</p></div>
+</div>
+<div class="quote" data-s="4" style="font-size:1.8rem">Recruiters need evidence, not just adjectives.</div>
+</section>
+
+<!-- 18 ─ JOB MATCHING -->
+<section class="slide" data-title="Job Matching" data-time="38:00 – 42:00">
+<div class="notes">
+<p class="dir">[اعرض إعلاناً حقيقياً محفوظاً مسبقاً لوظيفة Marketing Assistant أو Administrative Assistant، مع مراعاة مستوى الخبرة — هذا السلايد فيه نموذج للمقارنة]</p>
+<p>هاي وظيفة منشورة. خلينا نتعامل معها كأننا رح نقدم عليها اليوم. أول إشي بدنا نعرفه: شو متطلبات الوظيفة فعلاً؟ <span class="dir">[اطلب من طالب قراءة متطلبين أو ثلاثة]</span></p>
+<p>ممتاز. خلينا نقارن المتطلبات بالمعلومات اللي موجودة عند ليان. <span class="dir">[اضغط → لإظهار كل صف]</span></p>
+<p class="key">لاحظوا: في شغلات مناسبة، وفي شغلات مش مثبتة. وإحنا مش رح نعطي الطالب خبرة وهمية عشان يصير مناسب.</p>
+<p>رح نساعده يختار فرصاً أقرب لمؤهلاته، ويعرض خبرته الموجودة بشكل أفضل.</p>
+</div>
+<div class="kicker">Not every job fits us — and that’s OK</div>
+<h2>JOB DESCRIPTION <span class="grad">vs. REAL EVIDENCE</span></h2>
+<p class="lead" style="margin-bottom:1rem;font-size:1.25rem">Example posting: <b style="color:var(--ink)">Marketing Assistant (entry level)</b></p>
+<table>
+<thead><tr><th>Requirement</th><th>Candidate evidence</th><th>Result</th></tr></thead>
+<tbody>
+<tr data-s="1"><td>Excel</td><td>Used during student event coordination</td><td><span class="tag t-good">Supported</span></td></tr>
+<tr data-s="2"><td>Communication</td><td>Coordinated with participants</td><td><span class="tag t-good">Supported</span></td></tr>
+<tr data-s="3"><td>Canva</td><td>Not mentioned</td><td><span class="tag t-warn">Not verified</span></td></tr>
+<tr data-s="4"><td>2 years professional experience</td><td>Not provided</td><td><span class="tag t-bad">Missing</span></td></tr>
+</tbody></table>
+<p class="lead" data-s="5" style="font-size:1.3rem">We don’t invent experience to “fit”. We pick closer opportunities — and present real experience better.</p>
+</section>
+
+<!-- 19 ─ TAILORING PROMPT -->
+<section class="slide" data-title="Tailoring Prompt" data-time="42:00 – 43:30">
+<div class="notes">
+<p class="dir">[اعرض برومبت التخصيص]</p>
+<p>هسا إذا عنا وظيفتين مختلفتين، ممكن يطلع من نفس المعلومات المعتمدة نسختين مختلفتين من ناحية التركيز والترتيب.</p>
+<p class="key">بس الشخص نفسه. والحقائق نفسها.</p>
+</div>
+<div class="kicker">Tailoring without inventing</div>
+<h2>ONE CV → <span class="grad">TWO DIFFERENT JOBS</span></h2>
+<div class="code" data-s="1"><b>Compare this job description with my approved CV.</b>
+Identify supported requirements, transferable
+experience, and missing requirements.
+Then suggest a tailored CV for this job.
+<b>Keep every claim factual.
+Do not add any unverified skill, qualification,
+or work experience.</b>
+Explain what you changed and why.</div>
+<div class="grid g2" style="margin-top:1.4rem">
+<div class="card" data-s="2"><span class="tag t-info">Job A · Event Coordinator</span><p style="margin-top:.5rem">Lead with registration &amp; participant coordination.</p></div>
+<div class="card" data-s="2"><span class="tag t-info">Job B · Admin Assistant</span><p style="margin-top:.5rem">Lead with Excel &amp; organization of information.</p></div>
+</div>
+<p class="lead" data-s="3" style="margin-top:1.2rem;font-size:1.4rem">Same person. Same facts. Different focus and order.</p>
+</section>
+
+<!-- 20 ─ COVER LETTER -->
+<section class="slide" data-title="Cover Letter" data-time="43:30 – 45:00">
+<div class="notes">
+<p>وفي عنا إشي اسمه <b>Cover Letter</b>. مش كل شركة بتطلبه. بس لما ينطلب، الهدف منه مش نكرر الـCV حرفياً. الهدف إنه نشرح ليش خلفيتنا مرتبطة بهاي الفرصة.</p>
+<p class="dir">[اعرض المقتطف القصير]</p>
+<p>ونفس قاعدة الـCV بتنطبق هون. ما بنضيف شهادة مش موجودة، ولا خبرة ما اشتغلناها، وبنراجع الرسالة قبل ما نستخدمها.</p>
+<p class="dir">[انظر إلى الجمهور وخلص]</p>
+<p>طيب، خليني ألخص شو عملنا لحد الآن: بدأنا من معلومات طالب. استخدمنا AI عشان نجمعها. بنينا CV. راجعنا الحقائق. فهمنا متطلبات وظيفة. خصصنا الـCV. وجهزنا Cover Letter. كل هاي الخطوات ممكن تحتاج وقت وتنقل بين أكثر من أداة.</p>
+</div>
+<div class="kicker">When an employer asks for it</div>
+<h2>THE <span class="grad">COVER LETTER</span></h2>
+<div class="grid" style="grid-template-columns:1.25fr 1fr;gap:2.4rem;align-items:center">
+<div class="card" style="background:#fff;color:#1e293b;border:none;padding:2rem 2.4rem;border-radius:.6rem;box-shadow:0 2rem 5rem rgba(0,0,0,.5)">
+<p style="color:#1e293b;font-size:1.05rem;line-height:1.7">Dear Hiring Team,<br><br>I am writing to apply for the Marketing Assistant position. As a Business Administration student, I coordinated participant registration and communication for a university event, using Excel to organize attendee information.<br><br>I would like to bring this organizational experience to your team and keep learning on the job.<br><br>Sincerely,<br>Lina Ahmad</p>
+</div>
+<div class="col" style="gap:1rem">
+<div class="card" data-s="1"><h3>🎯 Explain the fit</h3><p>Why your background connects to this opportunity.</p></div>
+<div class="card" data-s="2"><h3>🚫 Don’t repeat the CV</h3><p>Not line by line.</p></div>
+<div class="card" data-s="3"><h3>✅ Same rule</h3><p>No invented degrees or experience. Review before using.</p></div>
+</div>
+</div>
+</section>
+
+<!-- 21 ─ RECAP -->
+<section class="slide" data-title="The Journey So Far" data-time="44:30 – 45:00">
+<div class="notes">
+<p class="dir">[خلص الملخص خطوة خطوة بالأسهم، ثم توقف قليلاً]</p>
+<p class="key">طيب، شو لو قدرنا نجمع أغلب هاي الرحلة في مكان واحد؟</p>
+<p class="dir">[لا تظهر السلايد التالي فوراً. توقف ثانيتين.]</p>
+<p>خليني أفرجيكم إشي اشتغلت عليه.</p>
+</div>
+<div class="kicker">Recap</div>
+<h2>THE JOURNEY <span class="grad">SO FAR</span></h2>
+<div class="steps7">
+<div class="card" data-s="1"><div class="n">1</div><p>Student info</p></div>
+<div class="card" data-s="2"><div class="n">2</div><p>AI interview</p></div>
+<div class="card" data-s="3"><div class="n">3</div><p>Build the CV</p></div>
+<div class="card" data-s="4"><div class="n">4</div><p>Verify the facts</p></div>
+<div class="card" data-s="5"><div class="n">5</div><p>Read the job</p></div>
+<div class="card" data-s="6"><div class="n">6</div><p>Tailor the CV</p></div>
+<div class="card" data-s="7"><div class="n">7</div><p>Cover letter</p></div>
+</div>
+<div class="quote" data-s="8" style="font-size:2.6rem">What if we could bring most of this journey<br>into <span class="grad">one place</span>?</div>
+</section>
+
+<!-- 22 ─ REVEAL -->
+<section class="slide center reveal" data-title="CareerPilot AI — The Reveal" data-time="45:00 – 46:00">
+<div class="notes">
+<p class="dir">[اقفل عرض الشرائح، وافتح CareerPilot AI مباشرة. اترك ثانيتين حتى يظهر البرنامج. (هذا السلايد احتياطي لو احتجت تظهر شيء قبل ما يفتح البرنامج.)]</p>
+<p>هذا <b>CareerPilot AI</b>. خلال شغلي على مشاريع بتستخدم الذكاء الاصطناعي، كنت مهتم بفكرة كيف ممكن نحول خطوات متكررة إلى تجربة أوضح وأسهل. وCareerPilot مبني على نفس الفكرة.</p>
+<p>بدل ما الطالب يظل ينقل المعلومات بين عدة أماكن، حاولنا نجمع خطوات تجهيز السيرة الذاتية والبحث عن الوظائف والتقديم في برنامج واحد.</p>
+<p class="dir">[اعرض Dashboard]</p>
+<p>هذا هو البرنامج. خلينا نمشي معه بنفس الترتيب اللي شرحناه قبل شوي.</p>
+<p class="dir">[إذا CareerPilot تأخر في الرد: اعرض سيرة ذاتية ومطابقة محفوظتين، ثم ارجع للمسار الأساسي. لا تضيع وقت الكشف بانتظار النموذج. وإذا النسخة النهائية ما اجتازت الاختبار قبل الورشة: اعرض فقط ما ثبت عمله.]</p>
+</div>
+<div class="kicker">One place for your career journey</div>
+<h1 class="grad" style="margin-bottom:2.2rem">✈ CareerPilot AI</h1>
+<div class="dash">
+<div class="card" data-s="1"><span>🧑‍💼</span>Build My CV with AI</div>
+<div class="card" data-s="2"><span>🔎</span>Find Jobs</div>
+<div class="card" data-s="3"><span>🎯</span>Tailoring Studio</div>
+<div class="card" data-s="4"><span>📋</span>Application Tracker</div>
+</div>
+</section>
+
+<!-- 23 ─ WALKTHROUGH -->
+<section class="slide" data-title="CareerPilot Walkthrough" data-time="46:00 – 55:00">
+<div class="notes">
+<p class="dir"><b>الدقيقة 46–48: إنشاء CV</b> — افتح Build My CV with AI</p>
+<p>لو عندك CV بتقدر ترفعه. ولو ما عندك CV أصلاً بتقدر تبدأ من الصفر. البرنامج بسألك عن دراستك ومهاراتك ومشاريعك وتدريبك وخبراتك. ومش شرط تكون اشتغلت بشركة قبل. ممكن تحكيله بالعربي وبساعدك ترتب المعلومات حتى تراجعها. <span class="dir">[اعرض جزءاً قصيراً من محادثة مجهزة مسبقاً]</span></p>
+<p class="key">بس قبل ما ينشئ الـCV النهائي، أنت بتراجع المعلومات وتوافق عليها — لأنه إحنا مش بدنا البرنامج يقرر عنك شو خبرتك.</p>
+<p>وبعدها بتقدر تعمل Preview وتحمّله PDF أو Word.</p>
+<p class="dir"><b>الدقيقة 48–51: البحث عن وظائف</b> — افتح Find Jobs</p>
+<p>هسا صار عندنا CV، بدنا نبحث عن فرص مناسبة. CareerPilot بيستخدم خدمة اسمها <b>Bright Data</b> لجلب بيانات وظائف مصدرها LinkedIn. هاي مش خدمة رسمية تابعة لـLinkedIn. وكل طالب بستخدم مفتاح API خاص بحسابه في Bright Data، وهو مسؤول عن استهلاكه ورسومه حسب شروط المزود.</p>
+<p>لما تشوف Match Percentage، لازم تعرف شو معناها: هاي مش فرصة قبولك بالوظيفة، هاي نسبة تغطية المتطلبات اللي عندنا دليل عليها في ملفك. وإذا ما لقينا خمس وظائف مناسبة، ما بنخترع خمس وظائف.</p>
+<p class="dir"><b>الدقيقة 51–53: التخصيص</b> — افتح Tailoring Studio</p>
+<p>خلينا نختار وظيفة. بعدها بنقدر نجهز CV مخصص لإلها وCover Letter مرتبطة بنفس الإعلان. البرنامج بيركز على الخبرات المناسبة، لكنه مش المفروض يخترع مهارات أو شهادات جديدة. هيك بصير عندك ملف واضح لكل فرصة بدل ما ترسل نفس النسخة لكل الشركات.</p>
+<p class="dir"><b>الدقيقة 53–55: التقديم والمتابعة</b> — افتح رابط الوظيفة الأصلي ثم Application Tracker</p>
+<p class="key">آخر خطوة هي التقديم. وهون لازم أكون واضح: CareerPilot ما بقدم على الوظائف بدالك تلقائياً. أنت بتفتح الإعلان الأصلي، وبتراجع التفاصيل، وبتقدم بنفسك.</p>
+<p>وبتقدر بعدين تسجل حالة الطلب، سواء قدمت، أو وصلت لمقابلة، أو لسه بتنتظر.</p>
+</div>
+<div class="kicker">Live demo · follow the same order</div>
+<h2>FOUR STEPS, <span class="grad">ONE APP</span></h2>
+<div class="grid g4" style="align-items:stretch">
+<div class="card" data-s="1"><div class="colnum">46 – 48 MIN</div><span class="ico">🧑‍💼</span><h3>Build My CV with AI</h3><ul><li>Upload a CV or start from zero</li><li>Speak Arabic if you like</li><li>You review &amp; approve first</li><li>Preview → PDF / Word</li></ul></div>
+<div class="card" data-s="2"><div class="colnum">48 – 51 MIN</div><span class="ico">🔎</span><h3>Find Jobs</h3><ul><li>Job data via Bright Data</li><li>Match % = evidence coverage</li><li>No fake jobs to fill a list</li></ul></div>
+<div class="card" data-s="3"><div class="colnum">51 – 53 MIN</div><span class="ico">🎯</span><h3>Tailoring Studio</h3><ul><li>Pick a job</li><li>Tailored CV + cover letter</li><li>No invented skills or certificates</li></ul></div>
+<div class="card" data-s="4"><div class="colnum">53 – 55 MIN</div><span class="ico">📋</span><h3>Apply &amp; Track</h3><ul><li>Open the original posting</li><li><b>You</b> apply, not the app</li><li>Track: applied · interview · waiting</li></ul></div>
+</div>
+</section>
+
+<!-- 24 -->
+<section class="slide" data-title="The Honest Part" data-time="54:00 – 55:00">
+<div class="notes">
+<p class="key">CareerPilot مش أداة بتضمنلك وظيفة. هي أداة بتساعدك تكون مستعد، منظم، وتعرف شو عندك وشو ناقصك. وبالنهاية، القرار دائماً إلك.</p>
+<p class="dir">[أسئلة محتملة]</p>
+<p><b>عن خصوصية البيانات:</b> اشرح الفرق بين معالجة السيرة محلياً وبين اتصال البحث بخدمة Bright Data. لا تقل إن كل وظائف التطبيق تعمل بدون إنترنت.</p>
+<p><b>عن رسوم Bright Data:</b> الطالب يستخدم حسابه الخاص، ويجب مراجعة الرصيد والفوترة وشروط الاستخدام في حسابه قبل تنفيذ عمليات البحث.</p>
+<p class="dir">[ارجع للشاشة الرئيسية]</p>
+</div>
+<div class="kicker">Be clear about what it is</div>
+<h2>WHAT CAREERPILOT <span class="grad">DOES NOT DO</span></h2>
+<div class="grid g2">
+<div class="card" data-s="1"><h3>🚫 Doesn’t apply for you</h3><p>You open the original posting, review it, and apply yourself.</p></div>
+<div class="card" data-s="2"><h3>🚫 Match % ≠ your chances</h3><p>It’s the share of requirements with evidence in your profile.</p></div>
+<div class="card" data-s="3"><h3>⚠ Not an official LinkedIn service</h3><p>Jobs come through Bright Data using <b>your own</b> API key — you manage usage and fees.</p></div>
+<div class="card" data-s="4"><h3>🚫 Doesn’t guarantee a job</h3><p>It helps you be prepared, organized, and aware of your gaps.</p></div>
+</div>
+<div class="quote" data-s="5" style="font-size:1.9rem">In the end, the decision is always yours.</div>
+</section>
+
+<!-- 25 ─ QR -->
+<section class="slide" data-title="Your Next Step" data-time="55:00 – 58:00">
+<div class="notes">
+<p class="dir">[اعرض QR Code كبيراً يقود لصفحة تنزيل البرنامج والموارد بعد تجهيزها واختبارها]</p>
+<p>هسا بدي أعطيكم إشي تاخذوه معكم من الورشة. هذا الكود بيوصلكم لصفحة فيها CareerPilot AI، ودليل استخدامه، وبعض الأدوات والأمثلة اللي ممكن تساعدكم تبنوا CV أفضل. <span class="dir">[امنح الطلاب دقيقة لتصوير الكود]</span></p>
+<p>بالنسبة لـCareerPilot، النسخة اللي جهزناها مخصصة لـ<b>Windows</b>. الذكاء الاصطناعي اللغوي بشتغل محلياً باستخدام <b>Ollama</b>، بعد ما يتم تنزيل النموذج وتجهيزه. والبحث عن الوظائف من خلال Bright Data بحتاج إنترنت وحساب خاص بالطالب. خطوات الإعداد رح تكون موضحة بالصفحة. ومش مطلوب منكم تكونوا مبرمجين عشان تستخدموا البرنامج.</p>
+<p class="key">مش مطلوب تحملوا كل إشي هسا وإنتوا قاعدين. خذوا الرابط، وبعد الورشة اتبعوا خطوات الإعداد بهدوء.</p>
+<p class="dir">[لا تقدم أي خاصية على أنها متاحة للطلاب إن لم تكن جاهزة ومختبرة. وإذا في وقت إضافي للأسئلة، خصصه بعد انتهاء الساعة وليس على حساب كشف البرنامج والـQR.]</p>
+</div>
+<div class="grid" style="grid-template-columns:auto 1fr;gap:4rem;align-items:center">
+<div class="qr" id="qrBox"></div>
+<div>
+<div class="kicker">Take it with you</div>
+<h2>YOUR <span class="grad">NEXT STEP</span></h2>
+<p class="lead" style="margin-bottom:1.2rem;font-size:1.3rem">Scan to get CareerPilot AI, the user guide, tools and examples.</p>
+<div class="col" style="gap:.7rem">
+<div class="card" data-s="1" style="padding:1rem 1.4rem"><p>🪟 Version prepared for <b style="color:var(--ink)">Windows</b></p></div>
+<div class="card" data-s="2" style="padding:1rem 1.4rem"><p>🧠 Language AI runs locally with <b style="color:var(--ink)">Ollama</b> — after the model is downloaded</p></div>
+<div class="card" data-s="3" style="padding:1rem 1.4rem"><p>🌐 Job search needs internet + your own <b style="color:var(--ink)">Bright Data</b> account</p></div>
+<div class="card" data-s="4" style="padding:1rem 1.4rem"><p>🙌 No need to be a programmer — setup steps are on the page</p></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 26 ─ CLOSING -->
+<section class="slide center" data-title="Closing" data-time="58:00 – 60:00">
+<div class="notes">
+<p class="dir">[ارجع بنظرك للحضور]</p>
+<p>قبل ما أختم، بدي أرجع لأول سؤال سألتكم إياه اليوم: شو آخر AI Tool استخدمتوه؟ هسا أنا بتمنى بعد هاي الورشة، لما تفتحوا أي أداة ذكاء اصطناعي، ما تكونوا بس عارفين وين تكتبوا السؤال. بدي تكونوا فاهمين شو الأداة بتعمل، وشو حدودها، وكيف تستخدموها بطريقة ذكية.</p>
+<p>وبالنسبة لسوق العمل، تذكروا شغلة: الـCV مش مجرد ورقة مطلوب منك تسلمها. هو الطريقة اللي بتقدم فيها قصتك المهنية لأول مرة. مش لازم تكون اشتغلت عشر سنين عشان يكون عندك إشي مهم تحكيه. ممكن يكون عندك مشروع تخرج، تدريب، تطوع، شغل جزئي، أو مهارة اكتسبتها وطبقتها فعلياً. المهم تعرف قيمتها، وتعرف تعرضها بطريقة صحيحة.</p>
+<p class="dir">[اخفض سرعة الكلام قليلاً]</p>
+<p>والذكاء الاصطناعي ممكن يساعدك في هاي الرحلة. لكن مش رح يحل محل خبرتك. ومش رح يحل محل اجتهادك. ومش رح يحل محل قرارك.</p>
+<p class="dir">[توقف] فإذا بدي أترككم اليوم مع فكرة واحدة، فهي:</p>
+<p class="key">Don’t let AI invent your story. Let it help you tell it better.</p>
+<p>شكراً كثير إلكم على مشاركتكم ووقتكم. وبشكر الجامعة الألمانية الأردنية على الاستضافة. وإن شاء الله تكون هاي الساعة أعطتكم إشي عملي تستخدموه في خطوتكم المهنية الجايّة. يعطيكم العافية جميعاً.</p>
+<p class="dir">[ابتسم. ارجع لسلايد الـQR (اضغط ←) واترك الـQR على الشاشة، وافتح المجال لسؤال سريع إذا بقي وقت.]</p>
+</div>
+<div class="kicker">One last idea</div>
+<h1 style="max-width:64rem;font-size:5rem">Don’t let AI <span class="grad">invent</span> your story.<br>Let it help you <span class="grad">tell</span> it better.</h1>
+<p class="lead" style="margin-top:2rem">Thank you · German Jordanian University</p>
+</section>
+
+</div><!-- /deck -->
+
+<!-- HUD -->
+<div class="hud" id="hud">
+<div class="grp"><button class="btn" onclick="prev()" title="←">◀</button><button class="btn" onclick="next()" title="→">▶</button><span id="counter">1 / 26</span></div>
+<div class="grp"><button class="btn" id="notesBtn" onclick="toggleNotes()" title="N">📝 الحكي</button><button class="btn" onclick="toggleFS()" title="F">⛶</button></div>
+</div>
+<div class="bar" id="bar"></div>
+
+<!-- Notes panel -->
+<aside id="notesPanel">
+<header><div><b id="npTitle"></b></div><span id="npTime"></span></header>
+<div id="notesBody"></div>
+</aside>
+
+<script>
+/* ═══════════════ CONFIG — عدّل هون ═══════════════ */
+const CONFIG = {
+  // رابط فيديو "مخ الـ AI" (سلايد رقم 4). يقبل: YouTube / Vimeo / ملف .mp4 أو .webm
+  // مثال: "https://www.youtube.com/watch?v=XXXXXXXXXXX"
+  BRAIN_VIDEO_URL: "",
+
+  // رابط صفحة التنزيل → يتولّد منه QR تلقائياً (يحتاج إنترنت)
+  QR_LINK: "",
+  // أو صورة QR جاهزة بجانب الملف، مثل "qr.png" (لها الأولوية إذا انكتبت)
+  QR_IMAGE: ""
+};
+/* ═════════════════════════════════════════════════ */
+
+const slides=[...document.querySelectorAll('.slide')];
+const $=id=>document.getElementById(id);
+let cur=0, step=0, prevIdx=-1;
+
+const maxStep=s=>{
+  if(s.dataset.zoom) return s.dataset.zoom.split(',').length-1;
+  let m=0; s.querySelectorAll('[data-s],[data-h]').forEach(e=>{m=Math.max(m,+(e.dataset.s||e.dataset.h))}); return m;
+};
+
+function applyZoom(s){
+  const stage=s.querySelector('.cv-stage'), paper=s.querySelector('.paper');
+  const W=stage.clientWidth, H=stage.clientHeight, pw=paper.offsetWidth, ph=paper.offsetHeight;
+  const target=s.dataset.zoom.split(',')[step].trim();
+  paper.classList.toggle('focusing',target!=='full');
+  paper.querySelectorAll('[data-f]').forEach(e=>e.classList.toggle('hot',e.dataset.f===target));
+  let sc,cx,cy;
+  if(target==='full'){ sc=Math.min(W*0.9/pw,H*0.9/ph); cx=pw/2; cy=ph/2; }
+  else{
+    const el=paper.querySelector('[data-f="'+target+'"]');
+    sc=Math.min(W*0.72/el.offsetWidth,H*0.55/el.offsetHeight,2.6);
+    cx=el.offsetLeft+el.offsetWidth/2; cy=el.offsetTop+el.offsetHeight/2;
+  }
+  paper.style.transform='translate('+(W/2-cx*sc)+'px,'+(H/2-cy*sc)+'px) scale('+sc+')';
+  const caps=(s.dataset.captions||'').split('|'); const c=s.querySelector('.caption');
+  if(c) c.textContent=caps[step]||'';
+}
+
+function render(){
+  const s=slides[cur];
+  slides.forEach((x,i)=>x.classList.toggle('active',i===cur));
+  s.querySelectorAll('[data-s]').forEach(e=>e.classList.toggle('on',+e.dataset.s<=step));
+  s.querySelectorAll('[data-h]').forEach(e=>e.classList.toggle('hl',+e.dataset.h<=step));
+  if(s.dataset.zoom) applyZoom(s);
+  // stop video when leaving its slide
+  if(prevIdx!==-1 && prevIdx!==cur){
+    slides[prevIdx].querySelectorAll('iframe').forEach(f=>{const u=f.src; f.src=u;});
+    slides[prevIdx].querySelectorAll('video').forEach(v=>v.pause());
+  }
+  prevIdx=cur;
+  $('counter').textContent=(cur+1)+' / '+slides.length;
+  $('bar').style.width=((cur+1)/slides.length*100)+'%';
+  $('npTitle').textContent=(cur+1)+'. '+s.dataset.title;
+  $('npTime').textContent=s.dataset.time||'';
+  const n=s.querySelector('.notes'); $('notesBody').innerHTML=n?n.innerHTML:'<p>—</p>';
+  $('notesBody').scrollTop=0;
+  history.replaceState(null,'','#'+(cur+1));
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+function next(){ if(step<maxStep(slides[cur])) step++; else if(cur<slides.length-1){cur++;step=0;} render(); }
+function prev(){ if(step>0) step--; else if(cur>0){cur--;step=maxStep(slides[cur]);} render(); }
+function toggleNotes(){ $('notesPanel').classList.toggle('open'); }
+function toggleFS(){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
+
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const k=e.key;
+  if(k==='ArrowRight'||k==='PageDown'){e.preventDefault();next();}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev();}
+  else if(k==='Home'){cur=0;step=0;render();}
+  else if(k==='End'){cur=slides.length-1;step=0;render();}
+  else if(k==='n'||k==='N'){toggleNotes();}
+  else if(k==='f'||k==='F'){toggleFS();}
+  else if(k==='h'||k==='H'){$('hud').classList.toggle('hide');}
+  else if(k==='Escape'){$('notesPanel').classList.remove('open');}
+});
+window.addEventListener('resize',()=>{const s=slides[cur]; if(s.dataset.zoom) applyZoom(s);});
+
+/* Video */
+(function(){
+  const box=$('brainVideo'), u=CONFIG.BRAIN_VIDEO_URL.trim();
+  if(!u){
+    box.innerHTML='<div class="vph"><div class="play">▶</div><div style="font-size:1.4rem;color:var(--ink)">Video: how an AI “brain” works</div><div>Set <code>BRAIN_VIDEO_URL</code> in the CONFIG block at the bottom of index.html</div></div>';
+    return;
+  }
+  let m;
+  if((m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/))){
+    box.innerHTML='<iframe src="https://www.youtube.com/embed/'+m[1]+'?rel=0" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  } else if((m=u.match(/vimeo\.com\/(\d+)/))){
+    box.innerHTML='<iframe src="https://player.vimeo.com/video/'+m[1]+'" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+  } else if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(u)){
+    box.innerHTML='<video src="'+u+'" controls playsinline></video>';
+  } else {
+    box.innerHTML='<iframe src="'+u+'" allowfullscreen></iframe>';
+  }
+})();
+
+/* QR */
+(function(){
+  const box=$('qrBox');
+  if(CONFIG.QR_IMAGE){ box.innerHTML='<img alt="QR" src="'+CONFIG.QR_IMAGE+'">'; return; }
+  if(CONFIG.QR_LINK){
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    sc.onload=()=>{ box.innerHTML=''; new QRCode(box,{text:CONFIG.QR_LINK,width:256,height:256}); };
+    sc.onerror=()=>{ box.textContent='QR failed to load — use QR_IMAGE instead'; };
+    document.head.appendChild(sc); return;
+  }
+  box.innerHTML='<div>QR CODE<br><br>Set <b>QR_LINK</b> or <b>QR_IMAGE</b><br>in CONFIG</div>';
+})();
+
+/* Timer */
+let tInt=null;
+function startTimer(){
+  clearInterval(tInt); let t=45; const el=$('timer');
+  const fmt=()=>{el.textContent='00:'+String(t).padStart(2,'0');};
+  fmt(); $('timerBtn').textContent='↻ Restart';
+  tInt=setInterval(()=>{t--; fmt(); if(t<=0){clearInterval(tInt); el.textContent='Time!';}},1000);
+}
+
+/* Init */
+const h=parseInt(location.hash.slice(1),10);
+if(h>=1&&h<=slides.length) cur=h-1;
+render();
+</script>
+</body>
+</html>
